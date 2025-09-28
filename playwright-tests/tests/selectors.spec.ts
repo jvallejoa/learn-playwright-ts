@@ -1,37 +1,37 @@
 import { test, expect } from "@playwright/test";
+import { OrdersPage } from "../pages/OrdersPage";
 
-test("Challenge 1: cancel order #2 button disappears after click", async ({
-    page,
-}) => {
-    await page.goto("http://localhost:3000/orders.html");
+test.describe("Order cancellation tests", () => {
+    let ordersPage: OrdersPage;
 
-    const orderRegion = await page.getByRole("region", { name: "Orders" });
-    const orderSection = await orderRegion.getByText("Order #2").locator("..");
-    await orderSection
-        .getByRole("button", { name: "Cancel subscription" })
-        .click();
+    test.beforeEach(async ({ page }) => {
+        ordersPage = new OrdersPage(page);
+        await ordersPage.goto();
+    });
 
-    //await expect(orderSection.getByRole("button")).toHaveCount(0);
-    await expect(orderSection).toHaveCount(0);
-});
+    test("should remove order section after canceling order #2", async () => {
+        const orderSection = ordersPage.getOrdersSection("2");
+        await expect(orderSection).toBeVisible();   
+        await ordersPage.cancelOrder("2");
+        await expect(orderSection).toHaveCount(0);
+    });
 
-test("Challenge 2: Click the last cancel button", async ({ page }) => {
-    await page.goto("http://localhost:3000/orders.html");
+    test("should decrease cancel button count when clicking last cancel button", async () => {
+        const cancelButtons = ordersPage.getAllCancelButtons();
+        const initialCount = await cancelButtons.count();
+        await cancelButtons.last().click();
+        const finalCount = await cancelButtons.count();
+        expect(finalCount).toBe(initialCount - 1);
+    });
 
-    const cancelButtons = page.getByRole("button", { name: 'Cancel subscription' });
-    const countBefore = await cancelButtons.count();
-    await cancelButtons.last().click();
-    const countAfter = await cancelButtons.count();
-    //await expect(countAfter).toBeLessThan(countBefore);
-    expect(countAfter).toBe(countBefore - 1);
-});
+    test("should remove order #1 completely from the page", async ({ page }) => {
+        expect(await ordersPage.hasOrder("1")).toBe(true);
 
-test("Challenge 3: Ensure order disappears", async ({ page }) => {
-    await page.goto("http://localhost:3000/orders.html");
+        await ordersPage.cancelOrder("1");
 
-    const firstOrder = page.getByText("Order #1").locator("..");
-    await firstOrder.getByRole("button", {name: 'Cancel subscription'}).click();
-    
-    // await expect(await firstOrder.count()).toBe(0);
-    await expect(firstOrder).toHaveCount(0);
+        const orderSection = await ordersPage.getOrdersSection("1");
+        // await expect(await orderSection.count()).toBe(0);
+        await expect(orderSection).toHaveCount(0);
+        expect(await ordersPage.hasOrder("1")).toBe(false);
+    });
 });

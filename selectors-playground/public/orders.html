@@ -3,22 +3,45 @@
 <head>
   <meta charset="UTF-8" />
   <title>Orders Page</title>
+  <style>
+    .order { margin-bottom: 1rem; padding: 0.5rem; border: 1px solid #ccc; }
+    .status { font-size: 0.9rem; color: gray; }
+  </style>
 </head>
 <body>
   <h1>Orders</h1>
+  
+  <!-- Orders region -->
   <div role="region" aria-label="Orders">
-    <div onclick="this.remove()" class="order">
+    <div onclick="this.remove()" class="order" data-order-id="1">
       <span>Order #1</span>
-      <button >Cancel subscription</button>
+      <span class="status">Active</span>
+      <button>Cancel subscription</button>
     </div>
-    <div onclick="this.remove()" class="order">
+    <div onclick="this.remove()" class="order" data-order-id="2">
       <span>Order #2</span>
-      <button >Cancel subscription</button>
+      <span class="status">Pending</span>
+      <button>Cancel subscription</button>
     </div>
-    <div onclick="this.remove()" class="order">
+    <div onclick="this.remove()" class="order" data-order-id="3">
       <span>Order #3</span>
+      <span class="status">Expired</span>
       <button>Cancel subscription</button>
     </div>
   </div>
+
+  <!-- New section: filters (does not affect existing tests) -->
+  <aside role="region" aria-label="Filters">
+    <h2>Filter Orders</h2>
+    <label>
+      <input type="checkbox" value="Active" /> Active
+    </label>
+    <label>
+      <input type="checkbox" value="Pending" /> Pending
+    </label>
+    <label>
+      <input type="checkbox" value="Expired" /> Expired
+    </label>
+  </aside>
 </body>
 </html>
