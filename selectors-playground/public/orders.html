@@ -5,43 +5,70 @@
   <title>Orders Page</title>
   <style>
     .order { margin-bottom: 1rem; padding: 0.5rem; border: 1px solid #ccc; }
-    .status { font-size: 0.9rem; color: gray; }
+    .status { font-size: 0.9rem; color: gray; margin-left: 0.5rem; }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
   <h1>Orders</h1>
   
   <!-- Orders region -->
-  <div role="region" aria-label="Orders">
-    <div onclick="this.remove()" class="order" data-order-id="1">
+  <div role="region" aria-label="Orders" id="orders-list">
+    <div class="order" data-order-id="1" data-status="Active">
       <span>Order #1</span>
       <span class="status">Active</span>
-      <button>Cancel subscription</button>
+      <button class="cancel-btn">Cancel subscription</button>
     </div>
-    <div onclick="this.remove()" class="order" data-order-id="2">
+    <div class="order" data-order-id="2" data-status="Pending">
       <span>Order #2</span>
       <span class="status">Pending</span>
-      <button>Cancel subscription</button>
+      <button class="cancel-btn">Cancel subscription</button>
     </div>
-    <div onclick="this.remove()" class="order" data-order-id="3">
+    <div class="order" data-order-id="3" data-status="Expired">
       <span>Order #3</span>
       <span class="status">Expired</span>
-      <button>Cancel subscription</button>
+      <button class="cancel-btn">Cancel subscription</button>
     </div>
   </div>
 
-  <!-- New section: filters (does not affect existing tests) -->
+  <!-- Filters -->
   <aside role="region" aria-label="Filters">
     <h2>Filter Orders</h2>
     <label>
-      <input type="checkbox" value="Active" /> Active
+      <input type="checkbox" value="Active" checked /> Active
     </label>
     <label>
-      <input type="checkbox" value="Pending" /> Pending
+      <input type="checkbox" value="Pending" checked /> Pending
     </label>
     <label>
-      <input type="checkbox" value="Expired" /> Expired
+      <input type="checkbox" value="Expired" checked /> Expired
     </label>
   </aside>
+
+  <script>
+    // Cancel button logic
+    document.querySelectorAll(".cancel-btn").forEach(btn => {
+      btn.addEventListener("click", e => {
+        e.target.closest(".order").remove();
+      });
+    });
+
+    // Filter logic
+    const checkboxes = document.querySelectorAll("aside input[type=checkbox]");
+    checkboxes.forEach(cb => {
+      cb.addEventListener("change", () => {
+        const activeFilters = Array.from(checkboxes)
+          .filter(c => c.checked)
+          .map(c => c.value);
+
+        document.querySelectorAll(".order").forEach(order => {
+          order.classList.toggle(
+            "hidden",
+            !activeFilters.includes(order.dataset.status)
+          );
+        });
+      });
+    });
+  </script>
 </body>
 </html>

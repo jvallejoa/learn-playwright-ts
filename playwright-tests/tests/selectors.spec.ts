@@ -11,7 +11,7 @@ test.describe("Order cancellation tests", () => {
 
     test("should remove order section after canceling order #2", async () => {
         const orderSection = ordersPage.getOrdersSection("2");
-        await expect(orderSection).toBeVisible();   
+        await expect(orderSection).toBeVisible();
         await ordersPage.cancelOrder("2");
         await expect(orderSection).toHaveCount(0);
     });
@@ -24,7 +24,7 @@ test.describe("Order cancellation tests", () => {
         expect(finalCount).toBe(initialCount - 1);
     });
 
-    test("should remove order #1 completely from the page", async ({ page }) => {
+    test("should remove order #1 completely from the page", async () => {
         expect(await ordersPage.hasOrder("1")).toBe(true);
 
         await ordersPage.cancelOrder("1");
@@ -34,4 +34,10 @@ test.describe("Order cancellation tests", () => {
         await expect(orderSection).toHaveCount(0);
         expect(await ordersPage.hasOrder("1")).toBe(false);
     });
+
+    test("should apply pending filter", async () => {
+        await ordersPage.unCheckFilter("Pending");
+        await expect(ordersPage.getFilterCheckbox("Pending")).not.toBeChecked();
+        await expect(ordersPage.getOrdersSection("2")).toBeHidden();
+    })
 });

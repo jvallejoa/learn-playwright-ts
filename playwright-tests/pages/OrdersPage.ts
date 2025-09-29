@@ -16,6 +16,7 @@ export class OrdersPage {
         await this.ordersRegion.waitFor({ state: 'visible' })
     }
 
+    // Orders
     getOrdersSection(orderNumber: string): Locator {
         return this.ordersRegion.getByText(`Order #${orderNumber}`).locator("..");
     }
@@ -44,5 +45,21 @@ export class OrdersPage {
         } catch {
             return false;
         }
+    }
+
+    // Filters
+    getFilterSection(): Locator {
+        return this.page.getByRole("region", { name: "Filters" });
+    }
+    
+    getFilterCheckbox(filterName: string): Locator {
+        return this.getFilterSection().getByRole('checkbox', { name: `${filterName}` });
+    }
+
+    async checkFilter(filterName: string): Promise<void> {
+        (await this.getFilterCheckbox(filterName)).check();
+    }
+    async unCheckFilter(filterName: string): Promise<void> {
+        (await this.getFilterCheckbox(filterName)).uncheck();
     }
 }
